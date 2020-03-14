@@ -1,4 +1,7 @@
 from tkinter import *
+from tkinter import messagebox
+
+
 #Database
 count=1
 name = ["Abhishek Yadav"]
@@ -16,21 +19,55 @@ ry=["2013"]
 dd=["26"]
 dm=["5"]
 dy=["2000"]
-wing=["0"]
+wing=["A"]
+
+
+def backi ():
+    i.destroy()
+    main()
+
 
 #INFO DSIPLAY
 def info():
     global i
     i = Tk()
     i.title('Society Member Information')
-    i.geometry("900x500")
-    l21 = Label(i,text = "Number Of Members :"+str(count),font=("bold",12)).grid(row=0, column=0)
-
-    l22 = Label(i,text = "Member Information",font=("bold")).place(x=370,y=20)
+    #i.geometry("900x500")      
+    l23 = Label(i,text = "\tName\t").grid(row=2, column=0)
+    l24 = Label(i,text = "\tWing\t").grid(row=2, column=1)
+    l25 = Label(i,text = "\tRoom No.     ").grid(row=2, column=2)
+    l26 = Label(i,text = "\tAddress \t").grid(row=2, column=3)
+    l27 = Label(i,text = "\tCity\t").grid(row=2, column=4)
+    l28 = Label(i,text = "\tSate\t").grid(row=2, column=5)
+    l29 = Label(i,text = "Postal Code\t").grid(row=2, column=6)
+    l30 = Label(i,text = "Home Phone\t").grid(row=2, column=7)
+    l31 = Label(i,text = "\tWork Phone\t").grid(row=2, column=8)
+    l32 = Label(i,text = "Email ID\t").grid(row=2, column=9)
+    l33 = Label(i,text = "Registraion Date\t").grid(row=2, column=10)
+    l34 = Label(i,text = "Date Of Birth\t").grid(row=2, column=11)
     
+    for x in range(count):
+        l23 = Label(i,text = name[x]).grid(row=3+x, column=0)
+        l24 = Label(i,text = wing[x]).grid(row=3+x, column=1)
+        l25 = Label(i,text = room[x]).grid(row=3+x, column=2)
+        l26 = Label(i,text = address[x]).grid(row=3+x, column=3)
+        l27 = Label(i,text = city[x]).grid(row=3+x, column=4)
+        l28 = Label(i,text = state[x]).grid(row=3+x, column=5)
+        l29 = Label(i,text = pcode[x]).grid(row=3+x, column=6)
+        l30 = Label(i,text = hphone[x]).grid(row=3+x, column=7)
+        l31 = Label(i,text = wphone[x]).grid(row=3+x, column=8)
+        l32 = Label(i,text = email[x]).grid(row=3+x, column=9)
+        l33 = Label(i,text = (rd[x]+"/"+rm[x]+"/"+ry[x])).grid(row=3+x, column=10)
+        l34 = Label(i,text = (dd[x]+"/"+dm[x]+"/"+dy[x])).grid(row=3+x, column=11)
+
+    back = Button(i, text='Back', width=15,pady =5,bg='Green',fg='white',command=backi).grid(row=4+count)
+        
     
     i.mainloop()
 
+def backt ():
+    t.destroy()
+    main()
 
 def chk ():
     if(chk1.get()==False):
@@ -47,7 +84,8 @@ def chk ():
 
 def reg():    
     if (b1.curselection()==()) :
-        l20 = Label(t,text = "*FILL ALL FIELDS*",font=("bold",10),fg='red').place(x=265, y=480)               
+       #l20 = Label(t,text = "*FILL ALL FIELDS*",font=("bold",10),fg='red').place(x=265, y=480)
+        messagebox.showinfo("Error", "FILL ALL FIELDS")
     else :
         global count
         count = count+1
@@ -67,7 +105,14 @@ def reg():
         dm.append(s5.get())
         dy.append(s6.get())
         x=b1.curselection()
-        wing.append(str(x[0]))
+        if x[0]==0:
+            wing.append(str("A"))
+        if x[0]==1:
+            wing.append(str("B"))
+        if x[0]==2:
+            wing.append(str("C"))
+        if x[0]==3:
+            wing.append(str("D"))
         print(wing)
         t.destroy ()
         main ()
@@ -80,7 +125,7 @@ def register():
     t.title('Register Member ')
     t.geometry("700x500")
 
-    global e1,e2,e3,e4,e5,e7,e8,e9,e10,s1,s2,s3,s4,s5,s6,chk1,chk2,b1
+    global e1,e2,e3,e4,e5,e7,e8,e9,e10,s1,s2,s3,s4,s5,s6,chk1,chk2,b1,backt
     
     l1 = Label(t,text = "Full Name :",font=("bold")).place(x=50,y=20)
     e1 = Entry(t)
@@ -158,13 +203,17 @@ def register():
     chk2=BooleanVar()
     l16= Label(t, text = "I have read society rules and regulations.",font=(15)).place(x=150,y=400)
     c2 = Checkbutton(t, text = "",command=chk)
-    c2.place(x=545,y=405)  
+    c2.place(x=545,y=405)
+
+    back = Button(t, text='Back', width=25,pady = 10,bg='Green',fg='white',command=backt).place(x=25,y=435)
 
     t.mainloop()
     
 def submit():
     if radio.get()==0:
-        l19 = Label(text = "SELECT AN OPTION BEFORE CLCIKING SUBMIT",font=("bold",15),fg='red').place(x=120, y=350)
+        #l19 = Label(text = "SELECT AN OPTION BEFORE CLCIKING SUBMIT",font=("bold",15),fg='red').place(x=120, y=350)
+        messagebox.showinfo("Error", "SELECT AN OPTION BEFORE CLCIKING SUBMIT")
+
     if radio.get()==1:
         r.destroy()
         info()
