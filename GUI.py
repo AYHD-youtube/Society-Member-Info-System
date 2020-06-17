@@ -3,8 +3,6 @@ from tkinter import messagebox
 import psycopg2
 from psycopg2 import Error
 global UpdateId
-#Database
-count=0
 connection = psycopg2.connect(user = "postgres",
                                       password = "a",
                                       host = "127.0.0.1",
@@ -12,6 +10,8 @@ connection = psycopg2.connect(user = "postgres",
                                       database = "postgres")
 
 cursor = connection.cursor()
+cursor.execute("select count(*) from society;")
+count = cursor.fetchone()[0]
 def createdb ():
     try:
         cursor.execute("CREATE TABLE IF NOT EXISTS society(count int,name text,room text,address text,city text,state text,pcode text,hphone text,wphone text,email text,rd text,rm text,ry text,dd text,dm text,dy text,wing text);")
@@ -220,11 +220,16 @@ def backd ():
     main()
     
 def deleteMember ():
+    global count
     deleteId=e11.get()
-    cursor.execute("DELETE FROM society WHERE count = %s;",(deleteId,))
-    cursor.executemany("UPDATE society SET count=count-1 where count > %s;",(deleteId,))
-    connection.commit()
-    messagebox.showinfo("Succesful", "DELETED MEMBER INFO")
+    if int(deleteId)<=count:
+        cursor.execute("DELETE FROM society WHERE count = %s;",(deleteId,))
+        cursor.executemany("UPDATE society SET count=count-1 where count > %s;",(deleteId,))
+        connection.commit()
+        count=count-1
+        messagebox.showinfo("Succesful", "DELETED MEMBER INFO")
+    else:
+        messagebox.showinfo("Failed", "INCORRECT MEMBER ID")
     d.destroy()
     main()
 
@@ -254,8 +259,6 @@ def chk2 ():
         chk4.set(True)
     else:
         chk4.set(False)
-
-    update = Button(m, text='Update', width=25,pady = 10,bg='Green',fg='white',command=upd).place(x=235,y=435)
 
 def upd():  
     if (b2.curselection()==()) :
@@ -297,91 +300,97 @@ def upd():
 def updateMember ():
     global UpdateId
     UpdateId=e12.get()
-    u.destroy()
-    global m
-    m = Tk()
-    m.title('Update Member ')
-    m.geometry("700x500")
+    if int(UpdateId)<=count:
+        u.destroy()
+        global m
+        m = Tk()
+        m.title('Update Member ')
+        m.geometry("700x500")
 
-    global e13,e14,e15,e16,e17,e18,e19,e20,e21,s7,s8,s9,s10,s11,s12,chk3,chk4,b2
-    
-    l38 = Label(m,text = "Full Name :",font=("bold")).place(x=50,y=20)
-    e13 = Entry(m)
-    e13.place(x=55,y=50,height = 20, width = 200)
+        global e13,e14,e15,e16,e17,e18,e19,e20,e21,s7,s8,s9,s10,s11,s12,chk3,chk4,b2
+        
+        l38 = Label(m,text = "Full Name :",font=("bold")).place(x=50,y=20)
+        e13 = Entry(m)
+        e13.place(x=55,y=50,height = 20, width = 200)
 
-    gender = IntVar()
-    gender.set(0)
-    
-    l39 = Label(m, text = "Gender:",font=("bold")).place(x=50,y=75)
-    male = Radiobutton(m, text="Male", variable=gender, value=1).place(x=55,y=100)
-    female = Radiobutton(m, text="Female", variable=gender, value=2).place(x=120,y=100)
-    
-    
-    l40 = Label(m, text = "Wing Name:",font=("bold")).place(x=350,y=20)
-    b2 = Listbox(m,selectmode=SINGLE)
-    b2.place(x = 355, y = 50, height = 70, width = 110)
-    b2.insert(1,'A-Wing')
-    b2.insert(2,'B-Wing')
-    b2.insert(3,'C-Wing')
-    b2.insert(4,'D-Wing')
-    
-    l41 = Label(m, text = "Room No. :",font=("bold")).place(x=500,y=20)
-    e14 = Entry(m)
-    e14.place(x=505,y=50,height = 20, width = 50)
+        gender = IntVar()
+        gender.set(0)
+        
+        l39 = Label(m, text = "Gender:",font=("bold")).place(x=50,y=75)
+        male = Radiobutton(m, text="Male", variable=gender, value=1).place(x=55,y=100)
+        female = Radiobutton(m, text="Female", variable=gender, value=2).place(x=120,y=100)
+        
+        
+        l40 = Label(m, text = "Wing Name:",font=("bold")).place(x=350,y=20)
+        b2 = Listbox(m,selectmode=SINGLE)
+        b2.place(x = 355, y = 50, height = 70, width = 110)
+        b2.insert(1,'A-Wing')
+        b2.insert(2,'B-Wing')
+        b2.insert(3,'C-Wing')
+        b2.insert(4,'D-Wing')
+        
+        l41 = Label(m, text = "Room No. :",font=("bold")).place(x=500,y=20)
+        e14 = Entry(m)
+        e14.place(x=505,y=50,height = 20, width = 50)
 
-    l42 = Label(m, text = "Registraion Date :",font=("bold")).place(x=400,y=130)
-    s7 = Spinbox(m, from_= 1, to = 31)
-    s7.place(x=405,y=160,height = 20,width=30)
-    s8 = Spinbox(m, from_= 1, to = 12)
-    s8.place(x=445,y=160,height = 20,width=30)
-    s9 = Spinbox(m, from_= 2000, to = 2020)
-    s9.place(x=485,y=160,height = 20,width=50)
-    
-    l43 = Label(m, text = "Date Of Birth :",font=("bold")).place(x=50,y=130)
-    s10 = Spinbox(m, from_= 1, to = 31)
-    s10.place(x=55,y=160,height = 20,width=30)
-    s11 = Spinbox(m, from_= 1, to = 12)
-    s11.place(x=95,y=160,height = 20,width=30)
-    s12 = Spinbox(m, from_= 1960, to = 2010)
-    s12.place(x=135,y=160,height = 20,width=50)
+        l42 = Label(m, text = "Registraion Date :",font=("bold")).place(x=400,y=130)
+        s7 = Spinbox(m, from_= 1, to = 31)
+        s7.place(x=405,y=160,height = 20,width=30)
+        s8 = Spinbox(m, from_= 1, to = 12)
+        s8.place(x=445,y=160,height = 20,width=30)
+        s9 = Spinbox(m, from_= 2000, to = 2020)
+        s9.place(x=485,y=160,height = 20,width=50)
+        
+        l43 = Label(m, text = "Date Of Birth :",font=("bold")).place(x=50,y=130)
+        s10 = Spinbox(m, from_= 1, to = 31)
+        s10.place(x=55,y=160,height = 20,width=30)
+        s11 = Spinbox(m, from_= 1, to = 12)
+        s11.place(x=95,y=160,height = 20,width=30)
+        s12 = Spinbox(m, from_= 1960, to = 2010)
+        s12.place(x=135,y=160,height = 20,width=50)
 
-    chk3=BooleanVar()
-    l44 = Label(m, text = "Room Rented :",font=("bold")).place(x=400,y=190)
-    c1 = Checkbutton(m, text = "Yes",command=chk2)
-    c1.place(x=550,y=195)
+        chk3=BooleanVar()
+        l44 = Label(m, text = "Room Rented :",font=("bold")).place(x=400,y=190)
+        c1 = Checkbutton(m, text = "Yes",command=chk2)
+        c1.place(x=550,y=195)
 
-    l45 = Label(m, text = "Address :",font=("bold")).place(x=50,y=190)
-    e15 = Entry(m)
-    e15.place(x=55,y=220,height = 20, width = 250)
+        l45 = Label(m, text = "Address :",font=("bold")).place(x=50,y=190)
+        e15 = Entry(m)
+        e15.place(x=55,y=220,height = 20, width = 250)
 
-    l46 = Label(m, text = "City :",font=("bold")).place(x=50,y=250)
-    e16 = Entry(m)
-    e16.place(x = 55, y = 280, height = 20, width = 110)
+        l46 = Label(m, text = "City :",font=("bold")).place(x=50,y=250)
+        e16 = Entry(m)
+        e16.place(x = 55, y = 280, height = 20, width = 110)
 
-    l47 = Label(m, text = "State :",font=("bold")).place(x=180,y=250)
-    e17 = Entry(m)
-    e17.place(x = 185, y = 280, height = 20, width = 110)
+        l47 = Label(m, text = "State :",font=("bold")).place(x=180,y=250)
+        e17 = Entry(m)
+        e17.place(x = 185, y = 280, height = 20, width = 110)
 
-    l48 = Label(m, text = "Postal Code :",font=("bold")).place(x=310,y=250)
-    e18 = Entry(m)
-    e18.place(x = 315, y = 280, height = 20, width = 110)
-    
-    l49 = Label(m, text = "Home Phone :",font=("bold")).place(x=50,y=310)
-    e19 = Entry(m)
-    e19.place(x = 55, y = 340, height = 20, width = 110)
+        l48 = Label(m, text = "Postal Code :",font=("bold")).place(x=310,y=250)
+        e18 = Entry(m)
+        e18.place(x = 315, y = 280, height = 20, width = 110)
+        
+        l49 = Label(m, text = "Home Phone :",font=("bold")).place(x=50,y=310)
+        e19 = Entry(m)
+        e19.place(x = 55, y = 340, height = 20, width = 110)
 
-    l50 = Label(m, text = "Work Phone :",font=("bold")).place(x=200,y=310)
-    e20 = Entry(m)
-    e20.place(x = 205, y = 340, height = 20, width = 110)
+        l50 = Label(m, text = "Work Phone :",font=("bold")).place(x=200,y=310)
+        e20 = Entry(m)
+        e20.place(x = 205, y = 340, height = 20, width = 110)
 
-    l51 = Label(m, text = "Email-ID :",font=("bold")).place(x=350,y=310)
-    e21 = Entry(m)
-    e21.place(x = 355, y = 340, height = 20, width = 200)
+        l51 = Label(m, text = "Email-ID :",font=("bold")).place(x=350,y=310)
+        e21 = Entry(m)
+        e21.place(x = 355, y = 340, height = 20, width = 200)
 
-    chk4=BooleanVar()
-    l52= Label(m, text = "I have read society rules and regulations.",font=(15)).place(x=150,y=400)
-    c2 = Checkbutton(m, text = "",command=chk2)
-    c2.place(x=545,y=405)
+        chk4=BooleanVar()
+        l52= Label(m, text = "I have read society rules and regulations.",font=(15)).place(x=150,y=400)
+        c2 = Checkbutton(m, text = "",command=chk2)
+        c2.place(x=545,y=405)
+        update = Button(m, text='Update', width=25,pady = 10,bg='Green',fg='white',command=upd).place(x=235,y=435)
+    else:
+        messagebox.showinfo("Failed", "INCORRECT MEMBER ID")
+        u.destroy()
+        main()
 
 def update ():
     global u,e12
